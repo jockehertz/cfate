@@ -1,8 +1,12 @@
 from colorama import Fore
 
+
+#functions
+
 def print_error(message, solution):
     print("\n", Fore.RED, "Error:", Fore.RESET, message)
     print(Fore.GREEN, "Possible solution: ", Fore.RESET, solution, "\n")
+
 
 # returns a dict of structure {word (str): count (int)}
 def read_word_counts_from_file(file):
@@ -36,6 +40,8 @@ def get_dict_diff(**kwargs):
 
     return diff_dict
 
+
+#main 
 
 def main():
     filepath = input("What file should be analysed? ").strip()

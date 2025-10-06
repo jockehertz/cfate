@@ -21,6 +21,8 @@ from colorama import Fore
 import sys
 
 
+#functions
+
 def print_error(message, solution):
     print("\n", Fore.RED, "Error:", Fore.RESET, message)
     print(Fore.GREEN, "Possible solution:", Fore.RESET, solution, "\n")
@@ -55,7 +57,6 @@ def read_country_data_to_list(file):
     return country_data
 
 
-
 def filter_landlocked(country_list):
     landlocked_countries = list()
 
@@ -74,6 +75,8 @@ def sum_country_populations(country_list):
 
     return total_population 
 
+
+#main 
 
 def main():
     country_data_file = open(COUNTRY_DATA_FILEPATH, encoding="utf-8")
@@ -111,7 +114,6 @@ def main():
     total_population = sum_country_populations(landlocked_countries)
 
     print(f"There are in total {total_population} inhabitants in these {len(landlocked_countries)} countries.")
-
     
 
 if __name__ == "__main__":

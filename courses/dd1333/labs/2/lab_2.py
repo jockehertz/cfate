@@ -26,6 +26,7 @@ from colorama import Fore
 
 #functions
 
+
 #this function gets user input
 def input_participants():
     try:
@@ -65,6 +66,7 @@ def fetch_results(data):
 
 
 #main program
+
 def main():
     data = []
 
