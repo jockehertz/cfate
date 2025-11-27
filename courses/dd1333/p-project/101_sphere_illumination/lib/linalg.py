@@ -15,7 +15,11 @@ def deg2rad(theta):
 
 
 class Vector3d:
-    def __init__(self, x, y, z):
+
+    #Inits a Vector3d object 
+    # inputs: x (float), y (float), z (float): the x, y, and z coordinates of the vector
+    # outputs: no output
+    def __init__(self, x: float, y: float, z: float):
         try:
             self.x = float(x)
             self.y = float(y)
@@ -23,29 +27,92 @@ class Vector3d:
         except ValueError:
             raise ValueError
 
+    #Getter for the x attribute
+    # inputs: no input 
+    # outputs: self.x (float)
+    def get_x(self) -> float:
+        return self.x
 
-    # Get the norm 
-    def norm(self) -> float:
-        norm = sqrt(self.x**2 + self.y**2 + self.z**2)
-        return norm
+    #Getter for the y attribute
+    # inputs: no input 
+    # outputs: self.y (float)
+    def get_y(self) -> float:
+        return self.y
 
-    
-    def set(self, x, y, z):
+    #Getter for the z attribute
+    # inputs: no input 
+    # outputs: self.z (float)
+    def get_z(self) -> float:
+        return self.z;
+
+
+    #Setter for the x attribute
+    # inputs: x (float): the value which the x-coordinate is to be set to
+    # outputs: no output
+    # might raise a ValueError if the API caller gave the setter a bad input (non-parseable to float)
+    def set_x(self, x: float):
         try:
-            self.x = x
-            self.y = y
-            self.z = z
+            self.x = float(x) 
         except ValueError:
             raise ValueError
+
+    #Setter for the y attribute
+    # inputs: y (float): the value which the y-coordinate is to be set to
+    # outputs: no output
+    # might raise a ValueError if the API caller gave the setter a bad input (non-parseable to float)
+    def set_y(self, y: float):
+        try:
+            self.y = float(y) 
+        except ValueError:
+            raise ValueError
+
+    #Setter for the z attribute
+    # inputs: z (float): the value which the z-coordinate is to be set to
+    # outputs: no output
+    # might raise a ValueError if the API caller gave the setter a bad input (non-parseable to float)
+    def set_z(self, z: float):
+        try:
+            self.z = float(z)
+        except ValueError:
+            raise ValueError
+
+    #Get the norm 
+    # inputs: no input
+    # outputs: norm (float): the norm of the vector which the method is called on
+    def norm(self) -> float:
+        norm: float = sqrt(self.x**2 + self.y**2 + self.z**2)
+        return norm
+
+    #Sets all coordinates of a Vector3d
+    # inputs: x (float), y (float), z (float): the x, y, and z coordinates to be set
+    # outputs: no output
+    # might raise a ValueError if any of the coordinates is bad (non-parseable to float)
+    def set(self, x: float, y: float, z: float):
+        try:
+            x, y, z = float(x), float(y), float(z)
+
+        except ValueError:
+            raise ValueError
+
+        self.x = x
+        self.y = y
+        self.z = z
 
 
     # Construct a vector from spherical coordinates 
     # the angles should be in radians
-    def from_spherical(self, **kwargs):
+    # inputs: KWARGS:
+    #           rotation (float): the rotation angle for the coordinate
+    #           azimuth (float): the azimuth for the coordinate
+    #           radius (float): the radius for the coordinate
+    #
+    # outputs: no output
+    # might raise a ValueError if any of the arguments are bad (non-parseable to float)
+    def from_spherical(self, **kwargs: dict[any]):
         try:
-            phi = float(kwargs["rotation"])
-            theta = float(kwargs["azimuth"])
-            r = float(kwargs["radius"])
+            phi: float = float(kwargs["rotation"])
+            theta: float = float(kwargs["azimuth"])
+            r: float = float(kwargs["radius"])
         except ValueError:
             raise ValueError 
 
@@ -55,42 +122,52 @@ class Vector3d:
 
    
     # modifying the add method (a + b) for Vector3d objects
+    # inputs: v (Vector3d): the vector to be added to self
+    # outputs: u (Vector3d): the resultant vector of the addition
+    # might raise a NotA3dVector exception if v is not a Vector3d
     def __add__(self, v):
         if v.__class__ != Vector3d:
             raise NotA3dVector 
 
         x, y, z = self.x + v.x, self.y + v.y, self.z + v.z
 
-        return Vector3d(x, y, z)
+        u = Vector3d(x, y, z)
+        return u
 
 
     # modifying the subtract method (a - b) for Vector3d objects
+    # inputs: v (Vector3d): the vector for self to be subtracted with
+    # outputs: u (Vector3d): the resultant vector of the subtraction
+    # might raise a NotA3dVector exception if v is not a Vector3d
     def __sub__(self, v):
         if v.__class__ != Vector3d:
             raise NotA3dVector
 
         x, y, z = self.x - v.x, self.y - v.y, self.z - v.z
 
-        return Vector3d(x, y, z)
+        u = Vector3d(x, y, z)
+        return u
 
 
     # modifying the multiplication operator (a * b) for Vector3d objects 
-    # if a is a scalar, it just returns a scaled vector 
-    # if a is a vector, it returns the scalar product as a float or int
+    # if a is a float or int, it just returns a scaled vector 
+    # if a is a Vector3d, it returns the scalar product as a float
     def __mul__(self, a):
         if type(a) == int or type(a) == float:
-            x = a * self.x
-            y = a * self.y
-            z = a * self.z
+            x: float = a * self.x
+            y: float = a * self.y
+            z: float = a * self.z
 
             return Vector3d(x, y, z)
         
         elif a.__class__ == Vector3d:
-            scalar_product = self.x * a.x + self.y * a.y + self.z * a.z
+            scalar_product: float = self.x * a.x + self.y * a.y + self.z * a.z
             return scalar_product 
 
 
     # cross product
+    # inputs: v (Vector3d): the vector which self is to be operated with
+    # outputs: u (Vector3d): the resultant vector of the cross product
     def cross(self, v):
         if v.__class__ != Vector3d:
             raise NotA3dVector 
@@ -99,31 +176,35 @@ class Vector3d:
         y = -1 * (self.x * v.z - self.z * v.x) 
         z = self.x * v.y - self.y * v.x
 
-        return Vector3d(x, y, z)
+        u = Vector3d(x, y, z)
+        return u
 
         
-    # Get the difference of angle between two angles
+    # Get the difference of angle between two test_vectors
+    # inputs: v (Vector3d): the vector which v will be compared with for the angle difference
+    # outputs: angle (float): the angle difference in radians
     def angle_diff(self, v) -> float:
-        angle = acos((self*v)/(self.norm()*v.norm()))
+        angle: float = acos((self*v)/(self.norm()*v.norm()))
         return angle
 
     
     # This method projects a vector onto a Plane or a Vector3d
-    # Usage: v.project(a)
-    # Where v is a Vector3d and a is a Plane or a Vector3d
+    # inputs: a (Vector3d | Plane): the vector or plane which self is to be projected on
+    # outputs: projected (Vector3d): the projected vector
+    # might raise a MethodNotDefinedForClass exception
     def project(self, a):
         if a.__class__ == Plane:
-            n = a.normal()
-            alpha = self.angle_diff(n)
-            u_norm = (self.norm())*(cos(alpha))
-            t = u_norm/(n.norm())
+            n = a.normal() #Vector3d
+            alpha: float = self.angle_diff(n)
+            u_norm: float = (self.norm())*(cos(alpha))
+            t: float = u_norm/(n.norm())
             u = Vector3d(t*(n.x), t*(n.y), t*(n.z)) 
-            projected = (self - u) + a.origin
+            projected = (self - u) + a.origin # Vector3d
 
         elif a.__class__ == Vector3d:
-            alpha = self.angle_diff(a)
-            u_norm = self.norm() * cos(alpha)
-            t = u_norm/(a.norm())
+            alpha: float = self.angle_diff(a)
+            u_norm: float = self.norm() * cos(alpha)
+            t: float = u_norm/(a.norm()) 
             projected = Vector3d(t*(a.x), t*(a.y), t*(a.z))
 
         else:
@@ -132,20 +213,28 @@ class Vector3d:
         return projected
 
 
-# A plane is just defined by a pair of basis vectors
+# A plane is just defined by a pair of basis vectors and a starting vector
 class Plane:
-    def __init__(self, i, j, origin):
+
+    #Inits a Plane object
+    # inputs: i (Vector3d), j (Vector3d): the two basis vectors for the plane, 
+    #         origin (Vector3d): the vector which points to the plane's origin in R3
+    def __init__(self, i: Vector3d, j: Vector3d, origin: Vector3d):
         if i.__class__ == Vector3d and j.__class__ == Vector3d and origin.__class__ == Vector3d:
-            self.i = i 
-            self.j = j
-            self.origin = origin
+            self.i: Vector3d = i 
+            self.j: Vector3d = j
+            self.origin: Vector3d = origin
         else:
             raise NotA3dVector
 
-    def normal(self):
-        i = self.i 
-        j = self.j
-        return i.cross(j)
+    #Gets the normal Vector of a plane by cross product
+    # inputs: no inputs
+    # outputs: normal (Vector3d): the vector that is normal to the plane
+    def normal(self) -> Vector3d:
+        i: Vector3d = self.i 
+        j: Vector3d = self.j
+        normal = i.cross(j)
+        return normal
 
 
 
