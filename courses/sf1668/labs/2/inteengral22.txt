@@ -1,0 +1,103 @@
+clear all, close all;
+
+function ret = yunc(x, beta)
+    ret = (exp((-x.*beta))+0.6).*(1+((x./9).^3));
+end
+
+function ret = rotintunc(x, beta, h)
+    integral = 0;
+    t = (1/2)*(yunc(x(1), beta)^2);
+    if length(x)>2
+        for i = 2:length(x)-1
+            t = t + (yunc(x(i), beta)^2);
+        end
+    end
+    t = t + ((1/2)*yunc(x(end), beta)^2);
+
+    integral = t*h;
+
+    vol = pi*integral;
+
+    ret = vol;
+end
+
+function ret = richard(Volymer, antal_hattar)
+    iterationer = length(Volymer);
+    V_hatt = [];
+    for i = 1:iterationer-1
+        Vh = Volymer(1, i+1);
+        V2h = Volymer(1, i);
+        nya_v = Vh + (Vh - V2h)/(2^(2*antal_hattar+1)-1);
+        V_hatt(:, end+1) = [nya_v; Volymer(2, i+1)];
+    end
+    ret = V_hatt;
+end
+
+Volymer = [];
+iterationer = 18;
+
+for i = 1:iterationer
+    antalsteg = 2^i;
+    xstart = 0;
+    xslut = 26;
+    xlangd = xslut-xstart;
+    h = xlangd/antalsteg;
+    x = xstart:h:xslut;
+
+    beta = 0.2;
+
+    y = yunc(x,beta);
+
+    volym = rotintunc(x, beta, h);
+
+    disp(volym);
+
+    Volymer(:, end+1) = [volym; antalsteg];
+end
+
+disp("RICHARDSONEXTRAPOLERING")
+antal_hattar = 0;
+V_richard = Volymer;
+for i = 1:iterationer-2
+    V_richard = richard(V_richard, antal_hattar);
+    antal_hattar = antal_hattar+1;
+end
+disp(V_richard);
+
+kvot = (Volymer(1, end-2)-Volymer(1, end-1))/(Volymer(1, end-1) - Volymer(1, end))
+disp("KVOT NÄRA 4! TJOHO")
+
+disp("ETRUNK")
+
+etrunk1 = abs(Volymer(1, end-1) - Volymer(1, end));
+
+etrunk2 = abs(V_richard(1, end-1) - V_richard(1, end));
+
+disp("Vanligt:")
+disp(etrunk1)
+disp("")
+disp("Richardsson-extrapolering")
+disp(etrunk2)
+
+%% 2c
+format long;
+clear all;
+
+antalsteg = 2^10;
+xstart = 0;
+xslut = 26;
+xlangd = xslut-xstart;
+h = xlangd/antalsteg;
+x = xstart:h:xslut;
+
+beta = linspace(0.1, 0.15, 20);
+for i = 1:length(beta)
+disp(beta(i))
+disp(rotintunc(x, beta(i), h)-3500)
+disp("")
+disp("")
+end
+
+function ret = malFunc(x, beta, h)
+    
+end
