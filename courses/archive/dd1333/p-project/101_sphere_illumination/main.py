@@ -210,7 +210,8 @@ def main():
     # Create a vector for the light source
     light_source: Vector3d = Vector3d(x_0, y_0, z_0)
 
-    # The sphere is a matrix of light levels
+    # The sphere is a matrix of light levels, generate_sphere can raise
+    # a division by zero error if given a light source with a z-coordinate of 0.
     try:
         sphere: list[list[float | str | None]] = generate_sphere(
             radius, light_source, ZOOM
