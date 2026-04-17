@@ -248,7 +248,7 @@ $
   mu g = sqrt(a_0^2 + v^4/R^2) \
   (mu g)^2 = a_0^2 + v^4/R^2 \
   (mu g)^2 - a_0^2 = v^4/R^2 \
-  R^2((mu g)^2 - a_0^2) = v^2 \
+  R^2((mu g)^2 - a_0^2) = v^4 \
  $
  Ovan är då villkoret som avgör när bilen börjar glida.
  $

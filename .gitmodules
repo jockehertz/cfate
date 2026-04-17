@@ -1,0 +1,6 @@
+[submodule "courses/sg1132/carbraking/carbraking"]
+	path = courses/sg1132/carbraking/carbraking
+	url = git@gits-15.sys.kth.se:jhert/carbraking.git
+[submodule "courses/sg1132/projects/carbraking"]
+	path = courses/sg1132/projects/carbraking
+	url = git@gits-15.sys.kth.se:jhert/carbraking.git
