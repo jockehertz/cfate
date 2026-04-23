@@ -40,16 +40,17 @@
     stroke: none,
     columns: 3,
     table.header([*Matematisk notation*], [*Storhet*], [*Enhet*]),
-    $q$,         [Laddning],                  [$[C]$],
-    $e$,         [Elementära laddningen],     [$1.6 dot 10^(-19) space [C]$],
-    $epsilon_0$, [Vakuumpermittivitet],       [$8.85 dot 10^(-12) space [F/m]$],
-    $rho$,       [Volymladdningstäthet],      [$[C m^(-3)]$],
-    $sigma$,     [Ytladdningstäthet],         [$[C m^(-2)]$],
-    $lambda$,    [Linjär laddningstäthet],    [$[C m^(-1)]$],
-    $U$,         [Potentialenergi],           [$J$],
-    $V$,         [Potential],                 [$V$],
-    $C$,         [Capacitans],                [$F$],
-    $arrow(B)$,  [Magnetfältet],              [$T [N/(A m)]$],
+    $q$,         [Laddning],                                  [$[C]$],
+    $e$,         [Elementära laddningen],                     [$1.6 dot 10^(-19) space [C]$],
+    $epsilon_0$, [Vakuumpermittivitet],                       [$8.85 dot 10^(-12) space [F/m]$],
+    $rho$,          [Volymladdningstäthet],                   [$[C m^(-3)]$],
+    $sigma$,        [Ytladdningstäthet],                      [$[C m^(-2)]$],
+    $lambda$,       [Linjär laddningstäthet],                 [$[C m^(-1)]$],
+    $U$,            [Potentialenergi],                        [$J$],
+    $V$,            [Potential],                              [$V$],
+    $C$,            [Capacitans],                             [$F$],
+    $arrow(B)$,     [Magnetfältet],                           [$T [N/(A m)]$],
+    $E_"överslag"$, [Elektriskt fält som krävs för överslag], [$2 dot 10^6 V/m$],
   )
 ]
 
@@ -80,7 +81,7 @@
     [$arrow(E) = lambda/(2 pi epsilon_0) 1/r hat(r)$],                            [Elektriska fältet från en oändligt lång linjär laddning],
     [$arrow(E) = sigma/(2 epsilon_0) hat(n)$],                                    [Elektriska fältet från en oändligt stor laddad platta],
     [$Phi_E eq.triple integral.double arrow(E) dot hat(n) space d A$],                    [Elektriska fältets flöde],
-    [$Phi_E = integral.surf arrow(E) dot hat(n) space d A = integral.triple arrow(nabla) dot arrow(E) space d V$], [Gauss sats, tillämpad på elektriska fält],
+    [$Phi_E = integral.surf arrow(E) dot hat(n) space d A = integral.triple arrow(nabla) dot arrow(E) space d V = Q/epsilon_0$], [Gauss sats, tillämpad på elektriska fält],
     [$arrow(nabla) dot arrow(E) = rho/epsilon_0$], [Maxwells första ekvation, Gauss lag],
     [$Delta U eq.triple -q integral arrow(E) dot d arrow(r)$], [Potentialenergidifferens, definition],
     [$Delta V eq.triple (Delta U)/q = integral arrow(E) dot d arrow(r)$], [Potentialdifferens, definition],
@@ -93,6 +94,13 @@
     [$I eq.triple Phi_q = integral.double arrow(j) dot d arrow(A)$], [Definition av elektrisk ström],
     [$arrow(F) = q arrow(v) times arrow(B)$], [Kraften från ett magnetfält på en laddning med hastighet $arrow(v)$ relativt fältet],
     [$arrow(F) = I arrow(l) times arrow(B)$], [Kraften på en rak ledare med ström $I$ genom sig och längden $arrow(l)$ med riktning],
-    [$arrow(F) = integral I arrow(d l) times arrow(B) = - integral I arrow(B) times arrow(d l)$], [Kraften på en godtycklig ledare $arrow(l)$]
+    [$arrow(F) = integral I arrow(d l) times arrow(B) = - integral I arrow(B) times arrow(d l)$], [Kraften på en godtycklig ledare $arrow(l)$],
+    [$integral.surf arrow(B) space d S = 0$], [Gauss sats för magnetfält],
+    [$integral.cont arrow(B) space d arrow(r) = mu_0 I$], [Sluten linjeintegral över ett magnetfält (Amperes lag)],
+    [$integral.cont arrow(E) space d arrow(r) = 0$], [Sluten linjeintegral över det elektriska fältet],
+    [$B = (mu_0 N I R^2)/(2 r^3)$], [Magnetfältet i en kort spole],
+    [$B = (mu_0 N I)/l$], [Magnetfältet i en lång spole],
+    [$V = N(d/(d t)(arrow(B) dot arrow(S)) = N d/(d t) Phi_m$], [Inducerad spänning],
+
 )
 ]
