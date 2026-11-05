@@ -1,0 +1,265 @@
+addpath("src/")
+clear all
+close all
+
+%% U1
+% u = [x; y; xprick; yprick]
+% f(u) = [xprick; yprick; -x/(r^3); -y/(r^3)]
+
+%% U2
+
+% (a): se planetrhs.m
+
+% (b): definera initalvärden och disktretisera tidsintervallet
+u0 = [1; 0; 0; 1];
+antal_steg = 1000;
+t0 = 0;
+tslut = 2*pi;
+tees = linspace(t0, tslut, antal_steg + 1);
+
+un = euler(u0, @planetrhs, tees);
+
+un_exakt = exaktLosning(u0, tees);
+
+figure()
+
+% plotta euler mot den exakta lösningen
+plot(un(1, :), un(2, :))
+hold on
+plot(un_exakt(1, :), un_exakt(2, :), "--")
+axis equal
+title("U2 b: Euler mot exakta lösningen")
+legend("Euler", "Exakt lösning")
+hold off
+
+%% U3
+
+%a) se jacobi.m
+
+%b) trapets
+u0 = [1; 0; 0; 1]; % startgissning
+
+% punkter är här en matris innehållande alla u-vektorer
+punkter = trapets(u0, tees, @planetrhs, @jacobi);
+
+figure()
+
+% plotta trapetsmetoden mot den exakta lösningen
+plot(punkter(1, :), punkter (2, :))
+hold on
+plot(un_exakt(1, :), un_exakt(2, :), "--")
+axis equal
+title("U3; Trapetsmetoden")
+legend("Trapetsmetoden ft. Newton", "Exakt lösning")
+hold off
+
+%% U4
+
+% Vi väljer Störmer-Verlet
+% eftersom den är av högre ordning och har ett coolare namn
+un = stormer_verlet(u0, tees);
+
+figure()
+
+% plotta störmer-verlet mot den exakta lösningen
+plot(un(1, :), un(2, :))
+hold on
+plot(un_exakt(1, :), un_exakt(2, :), "--")
+axis equal
+title("U4: Störmer-Verlet")
+legend("Störmer-Verlet", "Exakt lösning")
+hold off
+
+%% U5
+
+disp("--------------")
+disp("U5")
+disp("--------------")
+
+% a)
+t0 = 0;
+tslut = pi/2;
+antal_steg = 10*[2, 4, 8, 16, 32, 64 ,128];
+u0 = [1; 0; 0; 1];
+
+fel = zeros(3, length(antal_steg)); % matris som innehåller felen
+
+% loopa över alla olika steglängder
+for i=1:length(antal_steg)
+    tees = linspace(t0, tslut, antal_steg(i));
+
+    % Kör metoderna för ett kvartsvarv
+    exakt_u = exaktLosning(u0, tees);
+    euler_u = euler(u0, @planetrhs, tees);
+    trapets_u = trapets(u0, tees, @planetrhs, @jacobi);
+    stormer_verlet_u = stormer_verlet(u0, tees);
+
+    fel(1, i) = vecnorm(euler_u(:, end) - exakt_u(:, end));
+    fel(2, i) = vecnorm(trapets_u(:, end) - exakt_u(:, end));
+    fel(3, i) = vecnorm(stormer_verlet_u(:, end) - exakt_u(:, end));
+end
+
+% beräkna delta t för varje steglängd
+delta_t = (tslut - t0)./antal_steg;
+
+% b och c)
+
+% samla resultaten i en tabell
+metoder = ["Euler Framåt", "Trapetsmetoden", "Störmer-Verlet"];
+resultat = array2table(fel', "RowNames", string(delta_t), "VariableNames", metoder);
+disp("FEL")
+disp(resultat)
+disp("---------")
+disp("")
+
+% beräkna konvergensordningen mellan successiva steglängder
+nogrannhetsordningar = log2(fel(:, 1:end-1) ./ fel(:, 2:end));
+nogrannhet = array2table(nogrannhetsordningar', "RowNames", string(delta_t(2:end)), "VariableNames", metoder);
+disp("NOGRANNHETSORDNINGAR")
+disp(nogrannhet)
+
+
+% log-log plot av felen
+figure()
+plot(log(delta_t), log(fel(1, :)));
+hold on;
+plot(log(delta_t), log(fel(2, :)));
+plot(log(delta_t), log(fel(3, :)));
+legend(metoder)
+title("U5: logaritmerat fel mot log(\Delta t) för varje metod")
+hold off;
+
+%% U6
+
+disp("--------------")
+disp("U6")
+disp("--------------")
+% a)
+% Euler framåt
+% y_(i+1) = y_i + h lambda y_i <=> y_(i+1) = (1 + h lambda) y_i
+% R(z) = 1 + z
+% |R(z)| < 1 <=> Re(z) finns i (-2, 0) 
+
+% Euler bakåt
+% y_(i+1) = y_i + h lambda y_(i+1)
+% y_(i+1)(1 - h lambda) = y_i <=> y_(i+1) = 1/(1-z) y_i
+% R(z) = 1/(1-z)
+% |R(z)| < 1 <=> 1/|1-z| < 1 <=> 1 < |1-z| <=> Re(z) finns i RR\(0, 2)
+
+% b) 
+% Euler framåt: R(z) = 1+z
+% Trapetsmetoden: R(z) = (2+z)/(2-z)
+
+% c)
+% Euler framåt: För omega = 1 
+% |R(i omega h)| = |R(ih)| = sqrt(1 + h^2), vilket är större än 1 för h>0 => växer alltid.
+
+h_trapets = 0.01;
+stabilitet = sqrt(1 + (16*h_trapets^2)/(16*h_trapets^4 - 8*h_trapets^2 + 16));
+format long;
+disp("Stabilitet för trapetsmetoden: " + stabilitet)
+% Trapetsmetoden: för h = 0.01, |R| = 1+ 5e-5 > 1 => växer långsamt.
+
+% d) Stämmer! Euler spiralerar mycket utåt, trapetsmetoden ligger ganska nära banan.
+
+%% U7 a)
+
+varv = 50; 
+antal_steg = 1000*varv;
+tslut = varv*2*pi;
+tees = linspace(t0, tslut, antal_steg + 1);
+
+u0 = [1; 0; 0; 1]; % initiala värden
+
+euler_u = euler(u0, @planetrhs, tees); % värden från euler
+trapets_u = trapets(u0, tees, @planetrhs, @jacobi); % värden från trapets
+sv_u = stormer_verlet(u0, tees); % värden från störmer-verlet
+
+
+euler_energi = zeros(length(euler_u), 1); 
+trapets_energi = zeros(length(trapets_u), 1);
+sv_energi = zeros(length(sv_u), 1);
+
+fel = zeros(3, length(tees));
+
+energi = @(u) (1/2)*(u(3)^2 + u(4)^2) - 1/sqrt(u(1)^2 + u(2)^2);
+
+E0 = energi(u0);
+
+% beräknar delta E för varje
+for i = 1:length(tees)
+    % Euler
+    euler_energi(i) = energi(euler_u(:, i));
+
+    % Trapetsmetoden
+    trapets_energi(i) = energi(trapets_u(:, i));
+
+    % Störmer-Verlet
+    sv_energi(i) = energi(sv_u(:, i));
+
+    fel(:, i) = [
+        euler_energi(i) - E0;
+        trapets_energi(i) - E0;
+        sv_energi(i) - E0
+        ];
+end
+
+% plotta avvikelsen från E0 för varje metod
+figure()
+
+% euler och de andra 2 är på så olika plottar eftersom eulers fel var så
+% mycket större att de andra bara såg ut som funktionen y = 0 på den
+% plotten
+subplot(2, 1, 1)
+hold on;
+plot(tees, fel(1, :))
+legend("Euler")
+title("U7 a: Fel i energi för Euler Framåt")
+
+subplot(2, 1, 2)
+plot(tees, fel(2, :))
+hold on;
+plot(tees, fel(3, :))
+legend(["Trapets", "Störmer-Verlet"])
+title("U7 a: Fel i energi för Trapetsmetoden och Störmer-Verlet")
+
+%% U7 b)
+
+% den här delen gör samma sak som U7 a), men endast för Störmer-Verlet och
+% för jättemånga varv
+
+varv = 5000;
+antal_steg = 1000*varv;
+tslut = varv*2*pi;
+tees = linspace(t0, tslut, antal_steg + 1);
+
+u0 = [1; 0; 0; 1]; % initialvärden
+
+sv_u = stormer_verlet(u0, tees);
+sv_energi = zeros(length(sv_u), 1);
+sv_fel = zeros(length(sv_u), 1);
+
+for i = 1:length(tees)
+
+    % Störmer-Verlet
+    sv_energi(i) = energi(sv_u(:, i));
+
+    sv_fel(i) = sv_energi(i) - E0;
+end
+
+% plotta delta E för Störmer-Verlet
+figure()
+plot(tees, sv_fel);
+title("U7 b: Störmer-Verlet fel jättemånga varv")
+
+% U7 c)
+
+% För ett varv är
+% trapetsmetoden bäst
+% eftersom den har minst fel
+% (på ordningen 10^(-15) istället för störmer-verlets 10^(-14)
+
+% för miljontals varv är störmer-verlet bäst eftersom den bevarar energin
+% så väl, trapetsmetodens energi driver sakta iväg från E0
+
+% euler framåt är sopor förz allt
